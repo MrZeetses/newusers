@@ -9,14 +9,14 @@ window.VOSTOK_DEFAULT_AI_FN  = "vostok-ai"; // Сначала вызывает �
 const IMG = window.VOSTOK_IMAGES || {};
 
 window.VOSTOK_CATEGORIES = [
-  { slug: "all",    name: "Всё меню" },
-  { slug: "plov",   name: "Плов и рис" },
-  { slug: "grill",  name: "Шашлык и мангал" },
-  { slug: "bakery", name: "Самса и выпечка" },
-  { slug: "manti",  name: "Манты и лагман" },
-  { slug: "soups",  name: "Супы и шурпа" },
-  { slug: "snacks", name: "Салаты и закуски" },
-  { slug: "drinks", name: "Десерты и напитки" }
+  { slug: "all",    name: "Популярное и всё", icon: "🔥" },
+  { slug: "plov",   name: "Плов и рис",       icon: "🍛" },
+  { slug: "grill",  name: "Шашлык и мангал",  icon: "🍢" },
+  { slug: "bakery", name: "Самса и выпечка",  icon: "🥟" },
+  { slug: "manti",  name: "Манты и лагман",   icon: "🍜" },
+  { slug: "soups",  name: "Супы и шурпа",     icon: "🍲" },
+  { slug: "snacks", name: "Салаты и закуски", icon: "🥗" },
+  { slug: "drinks", name: "Десерты и напитки",icon: "🫖" }
 ];
 
 window.VOSTOK_ADDONS_BY_CATEGORY = {
@@ -112,12 +112,13 @@ window.VOSTOK_STATUS_META = {
 };
 
 window.VOSTOK_ROLE_META = {
-  customer:   { label: "Клиент",                badge: "bg-stone-200 text-stone-800",     staff: false },
-  cashier:    { label: "Кассир / Зал",          badge: "bg-amber-100 text-amber-800",     staff: true },
-  kitchen:    { label: "Повар (Кухня KDS)",     badge: "bg-orange-100 text-orange-800",   staff: true },
-  courier:    { label: "Курьер (Доставка)",     badge: "bg-indigo-100 text-indigo-800",   staff: true },
-  accountant: { label: "Бухгалтер (Финансы)",   badge: "bg-teal-100 text-teal-800",       staff: true },
-  admin:      { label: "Управляющий (Админ)",   badge: "bg-emerald-100 text-emerald-800", staff: true }
+  customer:   { label: "Клиент",                  badge: "bg-stone-200 text-stone-800",     staff: false },
+  accountant: { label: "Главный бухгалтер",       badge: "bg-teal-100 text-teal-800",       staff: true },
+  kitchen:    { label: "Шеф-повар (Кухня KDS)",   badge: "bg-orange-100 text-orange-800",   staff: true },
+  cashier:    { label: "Кассир (Терминал POS)",   badge: "bg-amber-100 text-amber-800",     staff: true },
+  courier:    { label: "Курьер (Доставка)",       badge: "bg-indigo-100 text-indigo-800",   staff: true },
+  warehouse:  { label: "Су-шеф / Склад и ТТК",    badge: "bg-blue-100 text-blue-800",       staff: true },
+  admin:      { label: "Управляющий (Админ)",     badge: "bg-emerald-100 text-emerald-800", staff: true }
 };
 
 window.VOSTOK_SEED_PRODUCTS = [
@@ -607,26 +608,29 @@ window.VOSTOK_SEED_PRODUCTS = [
 ];
 
 window.VOSTOK_SEED_INVENTORY = [
-  { id: "i-1", name: "Рис Девзира и Лазер", unit: "кг", qty: 42.5, min: 10, cost: 1450 },
-  { id: "i-2", name: "Баранина (мякоть и корейка)", unit: "кг", qty: 28.0, min: 8, cost: 4200 },
-  { id: "i-3", name: "Говядина (вырезка)", unit: "кг", qty: 34.0, min: 10, cost: 3800 },
-  { id: "i-4", name: "Мука высший сорт", unit: "кг", qty: 55.0, min: 15, cost: 420 },
-  { id: "i-5", name: "Гранатовый соус Наршараб", unit: "л", qty: 3.2, min: 4, cost: 3200 },
-  { id: "i-6", name: "Кинза, райхан и зелень", unit: "кг", qty: 1.2, min: 1.5, cost: 2400 },
-  { id: "i-7", name: "Жёлтая самаркандская морковь", unit: "кг", qty: 38.0, min: 12, cost: 380 },
-  { id: "i-8", name: "Казы и курдюк", unit: "кг", qty: 14.5, min: 5, cost: 5400 },
-  { id: "i-9", name: "Сыр Сулугуни", unit: "кг", qty: 11.0, min: 4, cost: 3600 },
-  { id: "i-10", name: "Чай листовой и горный чабрец", unit: "кг", qty: 6.4, min: 2, cost: 4800 }
+  { id: "i-1",  sku: "ING-0012", name: "Рис Девзира и Лазер",              category: "Бакалея и крупы",   unit: "кг", qty: 42.5, min: 10.0, cost: 1450, supplier: 'ТОО "ВостокАгро"',       warehouse: "Основной" },
+  { id: "i-2",  sku: "ING-0045", name: "Баранина (мякоть и корейка)",      category: "Мясо и птица",      unit: "кг", qty: 28.0, min: 8.0,  cost: 4200, supplier: 'АО "КазМясо Халяль"',    warehouse: "Кухня" },
+  { id: "i-3",  sku: "ING-0078", name: "Говядина (вырезка)",               category: "Мясо и птица",      unit: "кг", qty: 34.0, min: 10.0, cost: 3800, supplier: 'АО "КазМясо Халяль"',    warehouse: "Кухня" },
+  { id: "i-4",  sku: "ING-0098", name: "Мука высший сорт",                 category: "Бакалея и крупы",   unit: "кг", qty: 55.0, min: 15.0, cost: 420,  supplier: 'ТОО "Казах Зерно"',      warehouse: "Основной" },
+  { id: "i-5",  sku: "ING-0144", name: "Гранатовый соус Наршараб",         category: "Соусы и специи",    unit: "л",  qty: 2.8,  min: 4.0,  cost: 3200, supplier: 'ИП "Шёлковый Путь"',     warehouse: "Кухня" },
+  { id: "i-6",  sku: "ING-0162", name: "Кинза, райхан и зелень",           category: "Овощи и зелень",    unit: "кг", qty: 1.2,  min: 2.5,  cost: 2400, supplier: 'ТОО "ФудТрейд"',         warehouse: "Кухня" },
+  { id: "i-7",  sku: "ING-0175", name: "Жёлтая самаркандская морковь",     category: "Овощи и зелень",    unit: "кг", qty: 38.0, min: 12.0, cost: 380,  supplier: 'ТОО "ФудТрейд"',         warehouse: "Основной" },
+  { id: "i-8",  sku: "ING-0182", name: "Казы и курдюк",                    category: "Мясо и птица",      unit: "кг", qty: 14.5, min: 5.0,  cost: 5400, supplier: 'ИП "Жайляу Деликатес"',  warehouse: "Кухня" },
+  { id: "i-9",  sku: "ING-0201", name: "Сыр Сулугуни",                     category: "Молочные продукты", unit: "кг", qty: 11.0, min: 4.0,  cost: 3600, supplier: 'ИП "Парма Сыр"',         warehouse: "Кухня" },
+  { id: "i-10", sku: "ING-0245", name: "Чай листовой и горный чабрец",     category: "Бар и чайхана",     unit: "кг", qty: 6.4,  min: 2.0,  cost: 4800, supplier: 'ТОО "Чайный Дом"',       warehouse: "Бар" },
+  { id: "i-11", sku: "ING-0289", name: "Томаты ташкентские розовые",       category: "Овощи и зелень",    unit: "кг", qty: 3.4,  min: 6.0,  cost: 950,  supplier: 'ТОО "ФудТрейд"',         warehouse: "Кухня" },
+  { id: "i-12", sku: "ING-0312", name: "Фисташка иранская и грецкий орех", category: "Бар и чайхана",     unit: "кг", qty: 1.8,  min: 3.0,  cost: 8900, supplier: 'ИП "Шёлковый Путь"',     warehouse: "Бар" }
 ];
 
 window.VOSTOK_SEED_STAFF = [
-  { id: "00000000-0000-0000-0000-000000000001", name: "Рустам Каримов",             email: "admin@vostok.kz",      role: "admin",      shift: true,  shiftRate: 22000, shiftsWorked: 22, bonusPay: 45000 },
-  { id: "00000000-0000-0000-0000-000000000007", name: "Гульнара Серикова",          email: "buh@vostok.kz",        role: "accountant", shift: true,  shiftRate: 19500, shiftsWorked: 21, bonusPay: 30000 },
-  { id: "00000000-0000-0000-0000-000000000002", name: "Азизбек Умаров (Шеф-ошпаз)", email: "kitchen@vostok.kz",    role: "kitchen",    shift: true,  shiftRate: 18500, shiftsWorked: 21, bonusPay: 35000 },
-  { id: "00000000-0000-0000-0000-000000000003", name: "Мадина Садыкова",            email: "cashier@vostok.kz",    role: "cashier",    shift: true,  shiftRate: 13500, shiftsWorked: 20, bonusPay: 20000 },
-  { id: "00000000-0000-0000-0000-000000000004", name: "Ерлан Нурланов",             email: "courier@vostok.kz",    role: "courier",    shift: true,  shiftRate: 12500, shiftsWorked: 22, bonusPay: 28000 },
-  { id: "00000000-0000-0000-0000-000000000005", name: "Бахтияр Рахимов (Мангал)",   email: "kitchen2@vostok.kz",   role: "kitchen",    shift: true,  shiftRate: 17000, shiftsWorked: 19, bonusPay: 25000 },
-  { id: "00000000-0000-0000-0000-000000000006", name: "Дастан Алиев",               email: "courier2@vostok.kz",   role: "courier",    shift: false, shiftRate: 12500, shiftsWorked: 16, bonusPay: 18000 }
+  { id: "00000000-0000-0000-0000-000000000001", name: "Рустам Каримов",              email: "admin@vostok.kz",      role: "admin",      shift: true,  shiftRate: 22000, shiftsWorked: 22, bonusPay: 45000 },
+  { id: "00000000-0000-0000-0000-000000000007", name: "Ирина П. / Гульнара С.",      email: "buh@vostok.kz",        role: "accountant", shift: true,  shiftRate: 19500, shiftsWorked: 21, bonusPay: 30000 },
+  { id: "00000000-0000-0000-0000-000000000002", name: "Азизбек Умаров (Шеф-ошпаз)",  email: "kitchen@vostok.kz",    role: "kitchen",    shift: true,  shiftRate: 18500, shiftsWorked: 21, bonusPay: 35000 },
+  { id: "00000000-0000-0000-0000-000000000003", name: "Мадина Садыкова",             email: "cashier@vostok.kz",    role: "cashier",    shift: true,  shiftRate: 13500, shiftsWorked: 20, bonusPay: 20000 },
+  { id: "00000000-0000-0000-0000-000000000004", name: "Ерлан Нурланов",              email: "courier@vostok.kz",    role: "courier",    shift: true,  shiftRate: 12500, shiftsWorked: 22, bonusPay: 28000 },
+  { id: "00000000-0000-0000-0000-000000000008", name: "Алексей К. (Су-шеф / Склад)", email: "sklad@vostok.kz",      role: "warehouse",  shift: true,  shiftRate: 17500, shiftsWorked: 21, bonusPay: 25000 },
+  { id: "00000000-0000-0000-0000-000000000005", name: "Бахтияр Рахимов (Мангал)",    email: "kitchen2@vostok.kz",   role: "kitchen",    shift: true,  shiftRate: 17000, shiftsWorked: 19, bonusPay: 25000 },
+  { id: "00000000-0000-0000-0000-000000000006", name: "Дастан Алиев",                email: "courier2@vostok.kz",   role: "courier",    shift: false, shiftRate: 12500, shiftsWorked: 16, bonusPay: 18000 }
 ];
 
 // Генератор 100 реалистичных заказов за 30 дней для демонстрации аналитики за День / Неделю / Месяц
@@ -749,7 +753,7 @@ window.fmtKZT = function (n) {
 };
 
 // Единое хранилище состояния между index.html и staff.html + Supabase
-const SHARED_STORAGE_KEY = "vostok_house_shared_db_v4";
+const SHARED_STORAGE_KEY = "vostok_house_shared_db_v5";
 const SB_CFG_STORAGE_KEY = "vostok_sb_preview_cfg_v3";
 
 window.loadVostokConfig = function () {
