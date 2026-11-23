@@ -125,14 +125,25 @@
     const initialCfg = window.loadVostokConfig();
     const initialDb = window.loadSharedDb();
 
+    function toLocalInputDateTime(ts = Date.now()) {
+      const d = new Date(ts);
+      const pad = (n) => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
     let savedCustomer = null;
+    let savedMyOrderIds = [];
     try {
       const rawUser = localStorage.getItem("vostok_client_user_v2");
       if (rawUser) savedCustomer = JSON.parse(rawUser);
+      const rawIds = localStorage.getItem("vostok_client_my_order_ids_v2");
+      if (rawIds) savedMyOrderIds = JSON.parse(rawIds);
     } catch (_) {}
 
     const state = {
       user: savedCustomer, // Только клиент (role: 'customer')
+      myOrderIds: Array.isArray(savedMyOrderIds) ? savedMyOrderIds : [],
+      customOrderDateTime: toLocalInputDateTime(),
       authOpen: false,
       authMode: "login",   // 'login' | 'register'
       myOrdersOpen: false,
@@ -196,7 +207,27 @@
       try {
         if (state.user) localStorage.setItem("vostok_client_user_v2", JSON.stringify(state.user));
         else localStorage.removeItem("vostok_client_user_v2");
+        localStorage.setItem("vostok_client_my_order_ids_v2", JSON.stringify(state.myOrderIds || []));
       } catch (_) {}
+    }
+
+    // Личная история заказов текущего клиента (каждый клиент видит только свои заказы!)
+    function getMyOrders() {
+      const myIds = new Set(state.myOrderIds || []);
+      const uName = (state.user?.name || "").trim().toLowerCase();
+      const uEmail = (state.user?.email || "").trim().toLowerCase();
+      const uPhone = (state.user?.phone || "").trim();
+
+      return state.orders.filter((o) => {
+        if (myIds.has(String(o.id))) return true;
+        if (!state.user) return false;
+        const oCust = (o.customer || "").trim().toLowerCase();
+        const oPhone = (o.phone || "").trim();
+        if (uName && oCust === uName) return true;
+        if (uEmail && oCust === uEmail.split("@")[0]) return true;
+        if (uPhone && uPhone !== "+7 (701) 000-00-00" && oPhone === uPhone) return true;
+        return false;
+      });
     }
 
     // Синхронизация с внешними изменениями (например, когда персонал на staff.html добавил блюдо или сменил статус заказа)
@@ -371,7 +402,7 @@
 
             <div class="flex items-center gap-2">
               <button id="open-orders-btn" class="px-3.5 py-2 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-bold">
-                Мои заказы (${state.orders.length})
+                Мои заказы (${getMyOrders().length})
               </button>
 
               ${state.user ? `
@@ -642,6 +673,17 @@
                       </div>
                     `}
                     <input id="chk-comment" type="text" placeholder="Комментарий к заказу (необязательно)" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-xs" />
+
+                    <!-- Выбор даты и времени заказа (для проверки аналитики по дням, неделям и месяцам) -->
+                    <div class="p-3 rounded-2xl bg-orange-50/70 border border-orange-200 space-y-1.5">
+                      <label class="block text-[11px] font-extrabold text-orange-900">
+                        📅 Дата и время заказа (можно выбрать любую дату для теста аналитики)
+                      </label>
+                      <input id="chk-datetime" type="datetime-local" value="${state.customOrderDateTime || toLocalInputDateTime()}" class="w-full px-3 py-2 rounded-xl border border-orange-300 text-xs font-bold bg-white text-stone-900" required />
+                      <div class="text-[10px] text-orange-700">
+                        Выберите сегодняшнюю дату, прошлую неделю или любой день месяца — заказ сразу попадёт в отчёт за этот день!
+                      </div>
+                    </div>
                   </form>
 
                   <div class="pt-2 border-t border-stone-100 text-xs space-y-1">
@@ -827,23 +869,36 @@
         `;
       }
 
-      // 5. История заказов клиента
+      // 5. Личная история заказов текущего клиента
       if (state.myOrdersOpen) {
+        const myOrders = getMyOrders();
         html += `
           <div class="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-sm">
             <div class="bg-white w-full max-w-md h-full flex flex-col shadow-2xl">
               <div class="p-5 border-b border-stone-100 flex items-center justify-between">
-                <h2 class="text-xl font-extrabold">Мои заказы (${state.orders.length})</h2>
+                <div>
+                  <h2 class="text-xl font-extrabold">Мои заказы (${myOrders.length})</h2>
+                  <p class="text-[11px] text-stone-500">${state.user ? `Личная история: ${state.user.name}` : "Заказы текущего гостя"}</p>
+                </div>
                 <button id="close-orders-btn" class="w-9 h-9 rounded-full hover:bg-stone-100 font-bold">✕</button>
               </div>
               <div class="flex-1 overflow-y-auto p-5 space-y-3">
-                ${state.orders.map((o) => `
+                ${myOrders.length === 0 ? `
+                  <div class="text-center py-14 space-y-2">
+                    <div class="text-3xl">🍛</div>
+                    <div class="font-bold text-sm text-stone-700">У вас пока нет личных заказов</div>
+                    <div class="text-xs text-stone-400">Оформите свой первый заказ в меню — здесь отображаются только ваши личные заказы.</div>
+                  </div>
+                ` : myOrders.map((o) => `
                   <div class="p-4 rounded-2xl border border-stone-200 space-y-2">
                     <div class="flex items-center justify-between">
                       <span class="font-extrabold text-base">Заказ #${o.number}</span>
                       <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${STATUS_META[o.status]?.color || "bg-stone-100"}">
                         ${STATUS_META[o.status]?.label || o.status}
                       </span>
+                    </div>
+                    <div class="text-[11px] text-stone-400 font-semibold">
+                      📅 ${new Date(Number(o.createdAt || Date.now())).toLocaleString("ru-RU")}
                     </div>
                     <div class="text-xs text-stone-500">
                       ${o.type === "delivery" ? `🚚 Доставка: ${o.address}` : "🍽️ В зале (свободная посадка)"}
@@ -913,6 +968,8 @@
       }
 
       // Сценарий 1: ОПЛАТА ПРОШЛА
+      const chosenTs = state.pendingCheckout?.orderTimestamp || Date.now();
+      const chosenIso = new Date(chosenTs).toISOString();
       const newOrd = {
         id: `ord-${Date.now()}`,
         number: nextNum,
@@ -926,7 +983,7 @@
         transactionId: txId,
         status: "new",
         total,
-        createdAt: Date.now(),
+        createdAt: chosenTs,
         items: state.cart.map((c) => ({
           id: c.id,
           name: c.name,
@@ -948,10 +1005,13 @@
         bank_code: "00",
         bank_message: "Оплата успешно подтверждена банком.",
         transaction_id: txId,
-        created_at: new Date().toISOString()
+        created_at: chosenIso
       };
 
       state.orders.unshift(newOrd);
+      if (!state.myOrderIds.includes(newOrd.id)) {
+        state.myOrderIds.unshift(newOrd.id);
+      }
       state.paymentLogs.unshift(okLog);
       state.trackedOrderId = newOrd.id;
       state.cart = [];
@@ -977,7 +1037,9 @@
             promo_code: state.appliedPromo?.code || null,
             discount_amount: discount,
             total_amount: newOrd.total,
-            items: newOrd.items
+            items: newOrd.items,
+            created_at: chosenIso,
+            updated_at: chosenIso
           });
         } catch (err) {
           console.warn("Supabase order insert warning:", err);
@@ -1132,17 +1194,23 @@
         };
       }
 
+      const chkDt = document.getElementById("chk-datetime");
+      if (chkDt) chkDt.oninput = (e) => { state.customOrderDateTime = e.target.value; };
+
       const chkForm = document.getElementById("checkout-form");
       if (chkForm) {
         chkForm.onsubmit = (e) => {
           e.preventDefault();
           const addrEl = document.getElementById("chk-address");
           if (addrEl) state.address = addrEl.value;
+          const dtVal = document.getElementById("chk-datetime")?.value || state.customOrderDateTime;
+          const parsedTs = dtVal ? new Date(dtVal).getTime() : Date.now();
           state.pendingCheckout = {
             name: document.getElementById("chk-name")?.value || "Гость",
             phone: document.getElementById("chk-phone")?.value || "+7 (701) 000-00-00",
             address: state.deliveryType === "delivery" ? state.address : "В зале (свободная посадка)",
-            comment: document.getElementById("chk-comment")?.value || ""
+            comment: document.getElementById("chk-comment")?.value || "",
+            orderTimestamp: Number.isFinite(parsedTs) ? parsedTs : Date.now()
           };
           state.cartOpen = false;
           state.paymentModalOpen = true;

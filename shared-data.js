@@ -112,11 +112,12 @@ window.VOSTOK_STATUS_META = {
 };
 
 window.VOSTOK_ROLE_META = {
-  customer: { label: "Клиент",              badge: "bg-stone-200 text-stone-800",     staff: false },
-  cashier:  { label: "Кассир / Зал",        badge: "bg-amber-100 text-amber-800",     staff: true },
-  kitchen:  { label: "Повар (Кухня KDS)",   badge: "bg-orange-100 text-orange-800",   staff: true },
-  courier:  { label: "Курьер (Доставка)",   badge: "bg-indigo-100 text-indigo-800",   staff: true },
-  admin:    { label: "Управляющий (Админ)", badge: "bg-emerald-100 text-emerald-800", staff: true }
+  customer:   { label: "Клиент",                badge: "bg-stone-200 text-stone-800",     staff: false },
+  cashier:    { label: "Кассир / Зал",          badge: "bg-amber-100 text-amber-800",     staff: true },
+  kitchen:    { label: "Повар (Кухня KDS)",     badge: "bg-orange-100 text-orange-800",   staff: true },
+  courier:    { label: "Курьер (Доставка)",     badge: "bg-indigo-100 text-indigo-800",   staff: true },
+  accountant: { label: "Бухгалтер (Финансы)",   badge: "bg-teal-100 text-teal-800",       staff: true },
+  admin:      { label: "Управляющий (Админ)",   badge: "bg-emerald-100 text-emerald-800", staff: true }
 };
 
 window.VOSTOK_SEED_PRODUCTS = [
@@ -619,12 +620,13 @@ window.VOSTOK_SEED_INVENTORY = [
 ];
 
 window.VOSTOK_SEED_STAFF = [
-  { id: "00000000-0000-0000-0000-000000000001", name: "Рустам Каримов",             email: "admin@vostok.kz",    role: "admin",   shift: true,  shiftRate: 22000, shiftsWorked: 22, bonusPay: 45000 },
-  { id: "00000000-0000-0000-0000-000000000002", name: "Азизбек Умаров (Шеф-ошпаз)", email: "kitchen@vostok.kz",  role: "kitchen", shift: true,  shiftRate: 18500, shiftsWorked: 21, bonusPay: 35000 },
-  { id: "00000000-0000-0000-0000-000000000003", name: "Мадина Садыкова",            email: "cashier@vostok.kz",  role: "cashier", shift: true,  shiftRate: 13500, shiftsWorked: 20, bonusPay: 20000 },
-  { id: "00000000-0000-0000-0000-000000000004", name: "Ерлан Нурланов",             email: "courier@vostok.kz",  role: "courier", shift: true,  shiftRate: 12500, shiftsWorked: 22, bonusPay: 28000 },
-  { id: "00000000-0000-0000-0000-000000000005", name: "Бахтияр Рахимов (Мангал)",   email: "kitchen2@vostok.kz", role: "kitchen", shift: true,  shiftRate: 17000, shiftsWorked: 19, bonusPay: 25000 },
-  { id: "00000000-0000-0000-0000-000000000006", name: "Дастан Алиев",               email: "courier2@vostok.kz", role: "courier", shift: false, shiftRate: 12500, shiftsWorked: 16, bonusPay: 18000 }
+  { id: "00000000-0000-0000-0000-000000000001", name: "Рустам Каримов",             email: "admin@vostok.kz",      role: "admin",      shift: true,  shiftRate: 22000, shiftsWorked: 22, bonusPay: 45000 },
+  { id: "00000000-0000-0000-0000-000000000007", name: "Гульнара Серикова",          email: "buh@vostok.kz",        role: "accountant", shift: true,  shiftRate: 19500, shiftsWorked: 21, bonusPay: 30000 },
+  { id: "00000000-0000-0000-0000-000000000002", name: "Азизбек Умаров (Шеф-ошпаз)", email: "kitchen@vostok.kz",    role: "kitchen",    shift: true,  shiftRate: 18500, shiftsWorked: 21, bonusPay: 35000 },
+  { id: "00000000-0000-0000-0000-000000000003", name: "Мадина Садыкова",            email: "cashier@vostok.kz",    role: "cashier",    shift: true,  shiftRate: 13500, shiftsWorked: 20, bonusPay: 20000 },
+  { id: "00000000-0000-0000-0000-000000000004", name: "Ерлан Нурланов",             email: "courier@vostok.kz",    role: "courier",    shift: true,  shiftRate: 12500, shiftsWorked: 22, bonusPay: 28000 },
+  { id: "00000000-0000-0000-0000-000000000005", name: "Бахтияр Рахимов (Мангал)",   email: "kitchen2@vostok.kz",   role: "kitchen",    shift: true,  shiftRate: 17000, shiftsWorked: 19, bonusPay: 25000 },
+  { id: "00000000-0000-0000-0000-000000000006", name: "Дастан Алиев",               email: "courier2@vostok.kz",   role: "courier",    shift: false, shiftRate: 12500, shiftsWorked: 16, bonusPay: 18000 }
 ];
 
 // Генератор 100 реалистичных заказов за 30 дней для демонстрации аналитики за День / Неделю / Месяц
